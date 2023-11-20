@@ -83,8 +83,10 @@ func AuthStateHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	requestedURL := session.Values["requestedURL"].(string)
+
 	if err := getUserInfo(r, &user, &customClaims, &ptokens, authCodeOptions...); err != nil {
-		responses.Error400(w, r, fmt.Errorf("/auth Error while retrieving user info after successful login at the OAuth provider: %w", err))
+		responses.Error400WithClientRedirect(w, r, fmt.Errorf("/auth Error while retrieving user info after successful login at the OAuth provider: %w", err), requestedURL)
 		return
 	}
 	log.Debugf("/auth/{state}/ Claims from userinfo: %+v", customClaims)
@@ -108,7 +110,6 @@ func AuthStateHandler(w http.ResponseWriter, r *http.Request) {
 	cookie.SetCookie(w, r, tokenstring)
 
 	// get the originally requested URL so we can send them on their way
-	requestedURL := session.Values["requestedURL"].(string)
 	if requestedURL != "" {
 		// clear out the session value
 		session.Values["requestedURL"] = ""

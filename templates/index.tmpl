@@ -10,42 +10,43 @@
       name="viewport"
       content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=7"
     />
-    <title>Vouch Proxy - {{ .Msg }}</title>
+
+    {{ if .Redirect }}
+        <meta http-equiv="refresh" content="5; url={{ .RedirectURL }}">
+    {{ end }}
+    <title>Apiiro - {{ .Msg }}</title>
   </head>
   <body>
-<div class="top">
-  <a href="https://github.com/vouch/vouch-proxy"><img src="{{ .DocumentRoot }}/static/img/multicolor_V_500x500.png"/></a>
-  <a href="https://github.com/vouch/vouch-proxy"><span>Vouch Proxy</span></a>
-</div>
+    <div class="content">
+      <h1>{{ .Msg }}</h1>
 
-<div class="content">
-<h1>{{ .Msg }}</h1>
+      {{ if .Redirect }}
+        <p>
+          Retrying, if you are not redirected in a few seconds, <a href="{{ .RedirectURL }}">click here</a>
+        </p>
+      {{ end }}
 
-{{ if .Testing }}
-<p class="test">
-<h2>-- test mode --</h2>
-The config file includes <code>testing: true</code>
-<p/>
-All 302 redirects will be captured and presented as links here
+      {{ if .Testing }}
+        <p class="test">
+          <h2>-- test mode --</h2>
+            The config file includes <code>testing: true</code>
+        <p/>
+        All 302 redirects will be captured and presented as links here
+        <ul>
+          <li><a href="{{ .DocumentRoot }}/login">login</a></li>
+          <li><a href="{{ .DocumentRoot }}/logout">logout</a></li>
+          <li><a href="{{ .DocumentRoot }}/validate">validate</a></li>
+          {{ if .TestURLs }}
+            {{ range $url := .TestURLs}}
+            <li><a href="{{ $url }}">{{ $url }}</a></li>
+            {{ end }}
+          {{ end }}
+        </ul>
+      {{ end }}
 
-
-<ul>
-  <li><a href="{{ .DocumentRoot }}/login">login</a></li>
-  <li><a href="{{ .DocumentRoot }}/logout">logout</a></li>
-  <li><a href="{{ .DocumentRoot }}/validate">validate</a></li>
-{{ if .TestURLs }}
-  {{ range $url := .TestURLs}}
-  <li><a href="{{ $url }}">{{ $url }}</a></li>
-  {{ end }}
-{{ end }}
-</ul>
-{{ end }}
-<div class="bottom">
-For support, please contact your network administrator or whomever configured Nginx to use Vouch Proxy.
-<p/>
-For help with <a href="https://github.com/vouch/vouch-proxy">Vouch Proxy</a> or to file a bug report, please visit <a href="https://github.com/vouch/vouch-proxy">https://github.com/vouch/vouch-proxy</a>
-<p/>
-</div>
-</div>
+      <div class="bottom">
+        Please contact your admin or Apiiro support at <a href="mailto:support@apiiro.com">support@apiiro.com</a>
+      </div>
+    </div>
   </body>
 </html>
